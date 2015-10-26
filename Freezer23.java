@@ -1,4 +1,4 @@
-package com.cekkin.cekkinfreeze;
+package com.cekkin.freezer23;
 
 import java.util.ArrayList;
 
@@ -12,24 +12,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CekkinFreeze extends JavaPlugin implements Listener
+public class Freezer23 extends JavaPlugin implements Listener
 {
-	public ArrayList<String> congelados = new ArrayList<String>();
+	public ArrayList<String> Frozen = new ArrayList<String>();
 	String Prefix = getConfig().getString("Prefix");
 	String cmderror = getConfig().getString("cmderror");
-	String SoloJugador = getConfig().getString("SoloJugador").replaceAll("(&([a-f0-9]))", "\u00A7$2");
-	String MsgCongelado1 = getConfig().getString("MsgCongelado1");
-	String MsgCongelado2 = getConfig().getString("MsgCongelado2");
-	String MsgCongelado3 = getConfig().getString("MsgCongelado3");
-	String MsgMoveCongelado = getConfig().getString("MsgMoveCongelado");
-	String MsgDescongelado = getConfig().getString("MsgDescongelado");
-	String playercmd = getConfig().getString("playercmd").replaceAll("(&([a-f0-9]))", "\u00A7$2");
-	String permission = getConfig().getString("permission").replaceAll("(&([a-f0-9]))", "\u00A7$2");
+	String OnlyPlayer = getConfig().getString("OnlyPlayer");
+	String MsgFrozen1 = getConfig().getString("MsgFrozen1");
+	String MsgFrozen2 = getConfig().getString("MsgFrozen2");
+	String MsgFrozen3 = getConfig().getString("MsgFrozen3");
+	String MsgFrozenMove = getConfig().getString("MsgFrozenMove");
+	String MsgUnfrozen = getConfig().getString("MsgUnfrozen");
+	String playercmd = getConfig().getString("playercmd");
+	String permission = getConfig().getString("permission");
+	String AdminFreeze = getConfig().getString("AdminFreeze");
+	String AdminUnfreeze = getConfig().getString("AdminUnfreeze");
 	
 	public void onEnable()
 	{
-		congelados.clear();
-		Bukkit.getLogger().info(this.Prefix + "CekkinFreeze ACTIVADO!");
+		Frozen.clear();
+		Bukkit.getLogger().info(this.Prefix + "Freezer23 ACTIVATED!");
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		getConfig().options().copyDefaults(true);
 		saveConfig();
@@ -37,18 +39,18 @@ public class CekkinFreeze extends JavaPlugin implements Listener
 	
 	public void onDisable()
 	{
-		Bukkit.getLogger().info(this.Prefix + "CekkinFreeze DESACTIVADO!");
+		Bukkit.getLogger().info(this.Prefix + "Freezer23 DESACTIVATED!");
 	}
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e)
 	{
 		
-		if (congelados.contains(e.getPlayer().getName()))
+		if (Frozen.contains(e.getPlayer().getName()))
 		{
 			e.getPlayer().teleport(e.getPlayer());
-			String MsgMoveCongelado = getConfig().getString("MsgMoveCongelado");
-			e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', MsgMoveCongelado));
+			String MsgMoveFrozen = getConfig().getString("MsgMoveFrozen");
+			e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', MsgMoveFrozen));
 			return;
 		}
 		
@@ -67,20 +69,22 @@ public class CekkinFreeze extends JavaPlugin implements Listener
 					Player p = Bukkit.getPlayer(args[0]);
 					if (p == null)
 					{
-						sender.sendMessage(ChatColor.RED + "El jugador esta offline");
+						sender.sendMessage(ChatColor.RED + "The player is offline!");
 					}else{
-						if(congelados.contains(p.getName()))
+						if(Frozen.contains(p.getName()))
 						{
-							congelados.remove(p.getName());
+							Frozen.remove(p.getName());
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', AdminUnfreeze));
 							p.sendMessage(ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "-------------------------------------");
-							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgDescongelado));
+							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgUnfrozen));
 							p.sendMessage(ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "-------------------------------------");
 						}else{
-							congelados.add(p.getName());
+							Frozen.add(p.getName());
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', AdminFreeze));
 							p.sendMessage(ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "-------------------------------------");
-							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgCongelado1));
-							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgCongelado2));
-							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgCongelado3));
+							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgFrozen1));
+							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgFrozen2));
+							p.sendMessage(ChatColor.translateAlternateColorCodes('&', MsgFrozen3));
 							p.sendMessage(ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "-------------------------------------");
 						}
 					}
@@ -88,13 +92,13 @@ public class CekkinFreeze extends JavaPlugin implements Listener
 			}
 			if (!sender.hasPermission("cekkin.freeze")) 
 			{
-	        	   sender.sendMessage(ChatColor.RED + "No tienes permisos!");
+	        	   sender.sendMessage(ChatColor.translateAlternateColorCodes('&', permission));
 	        	   return true;
 	        	} else {
 	        	   if (!(sender instanceof Player))
 	        	   {
-	        		   this.congelados.add(sender.getName());
-	        		   sender.sendMessage(ChatColor.DARK_RED + "Este comando solo se puede ejecutar como jugador.");
+	        		   this.Frozen.add(sender.getName());
+	        		   sender.sendMessage(ChatColor.translateAlternateColorCodes('&', OnlyPlayer));
 	        		   Bukkit.getLogger().info(this.Prefix + "Player " + sender.getName() + " successfully froze " + sender.getName());
 	        		   return true;
 	        	   }
@@ -104,4 +108,3 @@ public class CekkinFreeze extends JavaPlugin implements Listener
 		}
 	}
 }
-	           
