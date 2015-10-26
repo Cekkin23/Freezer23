@@ -1,0 +1,13 @@
+name: Freezer23
+main: com.cekkin.freezer23.Freezer23
+version: 1.0
+author: Cekkin23
+commands:
+    freeze:
+        usage: /<command> [target player]
+        description: Freeze a player
+        permission: freezer23.admin
+permissions:
+    freezer23.admin:
+        description: Admin permission
+        default: op
